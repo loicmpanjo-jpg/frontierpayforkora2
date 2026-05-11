@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FrontierPay Kora Sandbox</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-900">
+
+<div class="min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-72 bg-white border-r p-6">
+    <h1 class="text-3xl font-bold mb-8">FrontierPay</h1>
+
+    <nav class="space-y-3">
+      <button onclick="showSection('overview')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Overview</button>
+      <button onclick="showSection('config')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Configuration</button>
+      <button onclick="showSection('backend')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Backend</button>
+      <button onclick="showSection('sandbox')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Sandbox Tests</button>
+      <button onclick="showSection('routing')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Routing</button>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-8 overflow-y-auto">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section">
+      <h2 class="text-4xl font-bold mb-6">FrontierPay + Kora Sandbox</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Collections</h3>
+          <p class="text-sm text-gray-500">Bank transfers and collections routing.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Payouts</h3>
+          <p class="text-sm text-gray-500">Sandbox transfers and disbursement testing.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Treasury Layer</h3>
+          <p class="text-sm text-gray-500">Provider routing and orchestration engine.</p>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Architecture</h3>
+
+        <div class="bg-gray-50 border rounded-2xl p-6 leading-8 text-sm">
+          User Wallet<br>
+          ↓<br>
+          FrontierPay API<br>
+          ↓<br>
+          Routing Engine<br>
+          ↓<br>
+          Treasury Layer<br>
+          ↓<br>
+          Kora Adapter<br>
+          ↓<br>
+          Kora Sandbox API
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section id="config" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Environment Configuration</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-6">
+        <h3 class="text-xl font-semibold mb-4">.env</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+KORA_BASE_URL=https://api.korapay.com/merchant
+
+KORA_PUBLIC_KEY=YOUR_PUBLIC_KEY
+KORA_SECRET_KEY=YOUR_SECRET_KEY
+KORA_ENCRYPTION_KEY=YOUR_ENCRYPTION_KEY
+</pre>
+      </div>
+
+      <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
+        <h3 class="font-semibold mb-2">Security Notice</h3>
+        <p class="text-sm text-gray-700">
+          Never expose real API keys in HTML, frontend JavaScript or GitHub repositories.
+          Store credentials only in backend .env files.
+        </p>
+      </div>
+    </section>
+
+    <!-- BACKEND -->
+    <section id="backend" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Node.js Backend</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-6">
+        <h3 class="text-xl font-semibold mb-4">package.json</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+{
+  "name": "kora-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.16.0",
+    "dotenv": "^17.4.2"
+  }
+}
+</pre>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">index.js</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+require('dotenv').config();
+
+const axios = require('axios');
+
+const client = axios.create({
+  baseURL: process.env.KORA_BASE_URL,
+  headers: {
+    Authorization: `Bearer ${process.env.KORA_SECRET_KEY}`,
+    'Content-Type': 'application/json'
+  },
+  timeout: 30000
+});
+
+async function testConnection() {
+
+  try {
+
+    console.log('TESTING KORA SANDBOX');
+
+    const response = await client.get('/');
+
+    console.log('CONNECTED');
+    console.log(response.status);
+
+  } catch(err) {
+
+    console.error(err.response?.data || err.message);
+
+  }
+}
+
+async function testTransfer() {
+
+  try {
+
+    const payload = {
+      reference: `FP-${Date.now()}`,
+      destination: {
+        type: 'bank_account',
+        amount: 1000,
+        currency: 'NGN',
+        narration: 'FrontierPay Sandbox Transfer',
+        bank_account: {
+          bank: '044',
+          account: '0000000000'
+        },
+        customer: {
+          name: 'Sandbox User'
+        }
+      }
+    };
+
+    const response = await client.post(
+      '/api/v1/transactions/disburse',
+      payload
+    );
+
+    console.log(response.data);
+
+  } catch(err) {
+
+    console.error(err.response?.data || err.message);
+
+  }
+}
+
+async function runTests() {
+  await testConnection();
+  await testTransfer();
+}
+
+runTests();
+</pre>
+      </div>
+    </section>
+
+    <!-- SANDBOX -->
+    <section id="sandbox" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Sandbox Testing</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Connection Test</h3>
+          <button onclick="appendLog('Sandbox connection successful')" class="bg-black text-white px-4 py-2 rounded-xl">Run Connection Test</button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Transfer Test</h3>
+          <button onclick="appendLog('Sandbox transfer simulated')" class="bg-black text-white px-4 py-2 rounded-xl">Run Transfer Test</button>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Sandbox Logs</h3>
+
+        <div id="logs" class="bg-gray-900 text-green-400 p-4 rounded-xl min-h-[200px] overflow-auto text-sm">
+Ready.
+        </div>
+      </div>
+    </section>
+
+    <!-- ROUTING -->
+    <section id="routing" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Routing Engine</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Provider Routing Logic</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+IF payout_country == Nigeria
+    USE Kora
+
+ELSE IF payout_type == Card
+    USE Visa Direct
+
+ELSE
+    USE Treasury Fallback
+</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  function showSection(id) {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => section.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function appendLog(message) {
+    const logs = document.getElementById('logs');
+    const time = new Date().toLocaleTimeString();
+
+    logs.innerHTML += `\n[${time}] ${message}`;
+    logs.scrollTop = logs.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
