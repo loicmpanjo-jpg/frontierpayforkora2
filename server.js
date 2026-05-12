@@ -277,6 +277,14 @@ app.post('/api/visa/callback', (req, res) => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
+// CONSOLE ROUTE
+// ═══════════════════════════════════════════════════════════════════════════
+
+app.get('/console', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'console.html'));
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
 // HEALTH CHECK
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -304,6 +312,8 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   logger.success(`FrontierPay Treasury running on http://localhost:${PORT}`);
+  logger.log(`📊 Dashboard → http://localhost:${PORT}`);
+  logger.log(`🕹️  Console → http://localhost:${PORT}/console`);
   logger.log(`📡 Kora Webhook → http://localhost:${PORT}/api/kora/callback`);
   logger.log(`📡 Visa Webhook → http://localhost:${PORT}/api/visa/callback`);
 });
