@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FrontierPay Treasury Configuration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+<div class="min-h-screen flex">
+
+  <!-- SIDEBAR -->
+  <aside class="w-72 bg-white border-r p-6">
+    <h1 class="text-3xl font-bold mb-8">FrontierPay</h1>
+
+    <nav class="space-y-3">
+      <button onclick="showSection('overview')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Overview</button>
+      <button onclick="showSection('treasury')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Treasury</button>
+      <button onclick="showSection('environment')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Environment</button>
+      <button onclick="showSection('routing')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Routing</button>
+      <button onclick="showSection('security')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Security</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 p-8 overflow-y-auto">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section">
+      <h2 class="text-4xl font-bold mb-6">FrontierPay Treasury Layer</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">African Rails</h3>
+          <p class="text-sm text-gray-500">Kora routing and local treasury execution.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Global Treasury</h3>
+          <p class="text-sm text-gray-500">Fallback settlement using multi-currency treasury accounts.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Settlement Engine</h3>
+          <p class="text-sm text-gray-500">Provider orchestration and resilient payout routing.</p>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Architecture</h3>
+
+        <div class="bg-gray-50 border rounded-2xl p-6 leading-8 text-sm">
+EasyMarkets App<br>
+↓<br>
+FrontierPay API Gateway<br>
+↓<br>
+Treasury Routing Engine<br>
+↓<br>
+Kora Adapter / Visa Adapter / Treasury Adapter<br>
+↓<br>
+Settlement & Reconciliation Layer
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURY -->
+    <section id="treasury" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Treasury Accounts</h2>
+
+      <div class="bg-yellow-50 border border-yellow-300 rounded-2xl p-6 mb-8">
+        <h3 class="font-semibold mb-2">Security Notice</h3>
+        <p class="text-sm text-gray-700">
+          Treasury account coordinates must never be exposed in frontend code, public repositories or client-side HTML.
+          Store all banking coordinates inside Render environment variables or encrypted backend storage only.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">USD Treasury</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+Provider: Treasury Fallback
+Currency: USD
+Settlement: ACH / Wire
+Source: Render ENV
+</pre>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">GBP Treasury</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+Provider: Treasury Fallback
+Currency: GBP
+Settlement: Local UK
+Source: Render ENV
+</pre>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">EUR Treasury</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+Provider: Treasury Fallback
+Currency: EUR
+Settlement: SEPA
+Source: Render ENV
+</pre>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ENVIRONMENT -->
+    <section id="environment" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Render Environment Variables</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-8">
+        <h3 class="text-xl font-semibold mb-4">Treasury Variables</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+# USD
+PAYONEER_USD_BANK=
+PAYONEER_USD_ACCOUNT=
+PAYONEER_USD_ROUTING=
+
+# GBP
+PAYONEER_GBP_BANK=
+PAYONEER_GBP_ACCOUNT=
+PAYONEER_GBP_SORT_CODE=
+
+# EUR
+PAYONEER_EUR_BANK=
+PAYONEER_EUR_IBAN=
+PAYONEER_EUR_BIC=
+</pre>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Backend Access Example</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+const treasuryAccounts = {
+
+  USD: {
+    bank: process.env.PAYONEER_USD_BANK,
+    account: process.env.PAYONEER_USD_ACCOUNT,
+    routing: process.env.PAYONEER_USD_ROUTING
+  },
+
+  GBP: {
+    bank: process.env.PAYONEER_GBP_BANK,
+    account: process.env.PAYONEER_GBP_ACCOUNT,
+    sortCode: process.env.PAYONEER_GBP_SORT_CODE
+  },
+
+  EUR: {
+    bank: process.env.PAYONEER_EUR_BANK,
+    iban: process.env.PAYONEER_EUR_IBAN,
+    bic: process.env.PAYONEER_EUR_BIC
+  }
+
+};
+</pre>
+      </div>
+    </section>
+
+    <!-- ROUTING -->
+    <section id="routing" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Treasury Routing Logic</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+IF payout_country == Nigeria
+    USE Kora
+
+ELSE IF payout_type == Card
+    USE Visa Direct
+
+ELSE IF currency == USD
+    USE USD Treasury
+
+ELSE IF currency == GBP
+    USE GBP Treasury
+
+ELSE IF currency == EUR
+    USE EUR Treasury
+
+ELSE
+    USE MANUAL FALLBACK
+</pre>
+      </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section id="security" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Security Hardening</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Implemented</h3>
+
+          <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+            <li>JWT authentication</li>
+            <li>Rate limiting</li>
+            <li>Webhook signature validation</li>
+            <li>Audit logging</li>
+            <li>mTLS Visa support</li>
+            <li>Backend-only treasury access</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Recommended</h3>
+
+          <ul class="space-y-2 text-sm text-gray-700 list-disc list-inside">
+            <li>Encrypted PostgreSQL storage</li>
+            <li>Cloudflare WAF</li>
+            <li>Webhook IP filtering</li>
+            <li>Transaction reconciliation</li>
+            <li>Provider failover monitoring</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function showSection(id) {
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(section => section.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
