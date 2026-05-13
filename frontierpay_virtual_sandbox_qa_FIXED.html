@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FrontierPay Virtual Sandbox QA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+<div class="min-h-screen flex">
+
+  <!-- SIDEBAR -->
+  <aside class="w-72 bg-white border-r p-6">
+    <h1 class="text-3xl font-bold mb-8">FrontierPay QA</h1>
+
+    <nav class="space-y-3">
+      <button onclick="showSection('overview')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Overview</button>
+      <button onclick="showSection('frontend')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Frontend Tests</button>
+      <button onclick="showSection('backend')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Backend Tests</button>
+      <button onclick="showSection('payments')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Payment Links</button>
+      <button onclick="showSection('security')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Security</button>
+      <button onclick="showSection('logs')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-100">Activity Logs</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 p-8 overflow-y-auto">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section">
+      <h2 class="text-4xl font-bold mb-6">FrontierPay Virtual Sandbox Environment</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Kora Sandbox</h3>
+          <p class="text-sm text-gray-500">African rails routing and payout validation.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Visa Sandbox</h3>
+          <p class="text-sm text-gray-500">mTLS validation and push funds testing.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-2">Treasury Layer</h3>
+          <p class="text-sm text-gray-500">Fallback routing and reconciliation testing.</p>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Infrastructure</h3>
+
+        <div class="bg-gray-50 border rounded-2xl p-6 leading-8 text-sm">
+Cloudflare<br>
+↓<br>
+Render Sandbox Backend<br>
+↓<br>
+Node.js API Layer<br>
+↓<br>
+PostgreSQL Sandbox<br>
+↓<br>
+Kora Sandbox API / Visa Sandbox API<br>
+↓<br>
+Treasury Fallback Layer
+        </div>
+      </div>
+    </section>
+
+    <!-- FRONTEND -->
+    <section id="frontend" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Frontend Validation</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-8">
+        <h3 class="text-xl font-semibold mb-4">Checklist</h3>
+
+        <ul class="space-y-3 text-sm text-gray-700 list-disc list-inside">
+          <li>Dashboard loads correctly</li>
+          <li>Navigation works</li>
+          <li>No JavaScript console errors</li>
+          <li>Responsive mobile layout</li>
+          <li>HTTPS redirect validation</li>
+          <li>Activity logs update dynamically</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+Expected Result:
+
+✔ Frontend operational
+✔ No rendering failures
+✔ Secure DOM rendering
+✔ CSP headers active
+</pre>
+      </div>
+    </section>
+
+    <!-- BACKEND -->
+    <section id="backend" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Backend Validation</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Kora Tests</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+GET /kora/test
+
+Validation:
+- Authorization header
+- Timeout handling
+- Error logging
+- Sandbox connectivity
+</pre>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Visa Tests</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+POST /visa/pushfunds
+
+Validation:
+- mTLS certificates
+- HTTPS handshake
+- Signature validation
+- Response parsing
+</pre>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Treasury Fallback</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+IF Kora unavailable
+   → Treasury USD / GBP / EUR
+
+IF Visa unavailable
+   → Treasury fallback routing
+
+Expected:
+✔ Failover operational
+✔ Ledger entries preserved
+✔ No transaction loss
+</pre>
+      </div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section id="payments" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Payment Link Validation</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-8">
+        <h3 class="text-xl font-semibold mb-4">Payment Endpoints</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-sm">
+/payments/create
+/payments/checkout
+/payments/status
+</pre>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Validation Rules</h3>
+
+        <ul class="space-y-3 text-sm text-gray-700 list-disc list-inside">
+          <li>Unique transaction references</li>
+          <li>Secure callback URLs</li>
+          <li>Expired links rejected</li>
+          <li>Duplicate requests blocked</li>
+          <li>Ledger entries created</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section id="security" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Security Validation</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Authentication</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+JWT Validation
+
+Expected:
+401 Unauthorized
+for invalid tokens.
+</pre>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-xl font-semibold mb-4">Rate Limiting</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+>100 requests / 15 min
+
+Expected:
+429 Too Many Requests
+</pre>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-8">
+        <h3 class="text-xl font-semibold mb-4">Webhook Validation</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+POST /webhooks/kora
+POST /webhooks/visa
+
+Validation:
+- HMAC signatures
+- IP filtering
+- Replay protection
+- Invalid signature rejection
+</pre>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Security Checklist</h3>
+
+        <ul class="space-y-3 text-sm text-gray-700 list-disc list-inside">
+          <li>HTTPS enforced</li>
+          <li>mTLS enabled</li>
+          <li>CSP headers active</li>
+          <li>XSS prevention enabled</li>
+          <li>Backend-only secrets</li>
+          <li>.env excluded from Git</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- LOGS -->
+    <section id="logs" class="section hidden">
+      <h2 class="text-4xl font-bold mb-6">Activity Logs</h2>
+
+      <div class="bg-white rounded-2xl shadow p-6 mb-8">
+        <h3 class="text-xl font-semibold mb-4">Audit Log Format</h3>
+
+<pre class="bg-gray-900 text-green-400 p-4 rounded-xl overflow-x-auto text-xs">
+{
+  "timestamp": "ISO_DATE",
+  "event": "REQUEST",
+  "method": "POST",
+  "path": "/payments/create",
+  "ip": "x.x.x.x"
+}
+</pre>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-4">Real-Time QA Logs</h3>
+
+        <div id="qaLogs" class="bg-gray-900 text-green-400 p-4 rounded-xl min-h-[220px] overflow-auto text-sm">
+[READY] FrontierPay Sandbox QA Environment Initialized
+        </div>
+
+        <button onclick="appendLog('Sandbox payment validation executed')" class="mt-4 bg-black text-white px-4 py-2 rounded-xl">Run Virtual Test</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function showSection(id) {
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(section => section.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function appendLog(message) {
+  const logs = document.getElementById('qaLogs');
+  const time = new Date().toLocaleTimeString();
+
+  logs.innerHTML += `\n[${time}] ${message}`;
+  logs.scrollTop = logs.scrollHeight;
+}
+</script>
+
+</body>
+</html>
